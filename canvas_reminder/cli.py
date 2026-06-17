@@ -39,6 +39,7 @@ def run(*, ignore_schedule: bool = False) -> int:
         client,
         lookahead_days=settings.lookahead_days,
         timezone_name=settings.timezone,
+        log_summary=True,
     )
     subject, text_body, html_body = build_email(reminders, today=now)
 

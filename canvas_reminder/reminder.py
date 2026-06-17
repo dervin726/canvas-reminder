@@ -35,28 +35,43 @@ def collect_unfinished_assignments(
     lookahead_days: int,
     timezone_name: str,
     now: datetime | None = None,
+    log_summary: bool = False,
 ) -> list[AssignmentReminder]:
     timezone = ZoneInfo(timezone_name)
     now = now.astimezone(timezone) if now else datetime.now(timezone)
     lookahead_end = now + timedelta(days=lookahead_days)
 
+    todos = client.get_todo_items()
+    stats = {
+        "todo_items": len(todos),
+        "not_submission_required": 0,
+        "outside_lookahead_or_no_due_date": 0,
+        "missing_canvas_ids": 0,
+        "submissions_checked": 0,
+        "already_finished": 0,
+    }
     reminders: list[AssignmentReminder] = []
-    for todo in client.get_todo_items():
+    for todo in todos:
         assignment = todo.get("assignment") or {}
         course = todo.get("course") or {}
         if not is_submission_required(assignment):
+            stats["not_submission_required"] += 1
             continue
         due_at = parse_datetime(assignment.get("due_at"), timezone)
         if not due_at or due_at > lookahead_end:
+            stats["outside_lookahead_or_no_due_date"] += 1
             continue
 
         course_id = str(course.get("id") or assignment.get("course_id") or todo.get("course_id") or "")
         assignment_id = str(assignment.get("id") or todo.get("assignment_id") or extract_canvas_id(todo.get("html_url")) or "")
         if not course_id or not assignment_id:
+            stats["missing_canvas_ids"] += 1
             continue
 
         submission = client.get_submission(course_id, assignment_id)
+        stats["submissions_checked"] += 1
         if is_finished(submission):
+            stats["already_finished"] += 1
             continue
 
         html_url = assignment.get("html_url") or todo.get("html_url") or ""
@@ -73,7 +88,17 @@ def collect_unfinished_assignments(
             )
         )
 
-    return sorted(reminders, key=lambda item: (item.due_at, item.course_name.lower(), item.assignment_name.lower()))
+    reminders = sorted(reminders, key=lambda item: (item.due_at, item.course_name.lower(), item.assignment_name.lower()))
+    if log_summary:
+        print("Canvas query summary:")
+        print(f"- Todo items fetched: {stats['todo_items']}")
+        print(f"- Submissions checked: {stats['submissions_checked']}")
+        print(f"- Already finished: {stats['already_finished']}")
+        print(f"- Skipped, no submission required: {stats['not_submission_required']}")
+        print(f"- Skipped, no due date or outside {lookahead_days} days: {stats['outside_lookahead_or_no_due_date']}")
+        print(f"- Skipped, missing Canvas course/assignment id: {stats['missing_canvas_ids']}")
+        print(f"- Unfinished reminders: {len(reminders)}")
+    return reminders
 
 
 def parse_datetime(value: str | None, timezone: ZoneInfo) -> datetime | None:
