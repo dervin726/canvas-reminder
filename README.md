@@ -5,7 +5,7 @@ Personal weekly Canvas unfinished assignment email reminders.
 ## Local Setup
 
 1. Copy `.env.example` to `.env`.
-2. Fill in your Canvas and Outlook credentials.
+2. Fill in your Canvas and SMTP email credentials.
 3. Run a dry run:
 
 ```powershell
@@ -24,12 +24,14 @@ python -m canvas_reminder run
 
 - `CANVAS_BASE_URL`: Canvas base URL, for example `https://your-school.instructure.com`
 - `CANVAS_API_TOKEN`: Canvas API access token
-- `OUTLOOK_EMAIL`: Outlook sender email address
-- `OUTLOOK_PASSWORD`: Outlook password or app password
+- `SMTP_EMAIL`: SMTP sender email address, for example a Gmail address
+- `SMTP_PASSWORD`: SMTP password, for example a Gmail app password
 - `RECIPIENT_EMAIL`: destination email address
 
 ## Optional Environment Variables
 
+- `SMTP_HOST`: defaults to `smtp.gmail.com`
+- `SMTP_PORT`: defaults to `587`
 - `LOOKAHEAD_DAYS`: defaults to `14`
 - `TIMEZONE`: defaults to `Australia/Sydney`
 - `DRY_RUN`: defaults to `false`

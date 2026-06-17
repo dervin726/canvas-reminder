@@ -4,7 +4,7 @@ from email.message import EmailMessage
 import smtplib
 
 
-def send_outlook_email(
+def send_smtp_email(
     *,
     sender: str,
     password: str,
@@ -12,7 +12,7 @@ def send_outlook_email(
     subject: str,
     text_body: str,
     html_body: str,
-    smtp_host: str = "smtp.office365.com",
+    smtp_host: str = "smtp.gmail.com",
     smtp_port: int = 587,
 ) -> None:
     message = EmailMessage()

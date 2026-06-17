@@ -31,9 +31,11 @@ def env_bool(name: str, default: bool = False) -> bool:
 class Settings:
     canvas_base_url: str
     canvas_api_token: str
-    outlook_email: str
-    outlook_password: str
+    smtp_email: str
+    smtp_password: str
     recipient_email: str
+    smtp_host: str = "smtp.gmail.com"
+    smtp_port: int = 587
     lookahead_days: int = 14
     timezone: str = "Australia/Sydney"
     dry_run: bool = False
@@ -45,7 +47,7 @@ def load_settings(require_email: bool = True) -> Settings:
 
     required = ["CANVAS_BASE_URL", "CANVAS_API_TOKEN"]
     if require_email:
-        required.extend(["OUTLOOK_EMAIL", "OUTLOOK_PASSWORD", "RECIPIENT_EMAIL"])
+        required.extend(["SMTP_EMAIL", "SMTP_PASSWORD", "RECIPIENT_EMAIL"])
 
     missing = [name for name in required if not os.getenv(name)]
     if missing:
@@ -54,9 +56,11 @@ def load_settings(require_email: bool = True) -> Settings:
     return Settings(
         canvas_base_url=os.environ["CANVAS_BASE_URL"].rstrip("/"),
         canvas_api_token=os.environ["CANVAS_API_TOKEN"],
-        outlook_email=os.getenv("OUTLOOK_EMAIL", ""),
-        outlook_password=os.getenv("OUTLOOK_PASSWORD", ""),
+        smtp_email=os.getenv("SMTP_EMAIL", ""),
+        smtp_password=os.getenv("SMTP_PASSWORD", ""),
         recipient_email=os.getenv("RECIPIENT_EMAIL", ""),
+        smtp_host=os.getenv("SMTP_HOST") or "smtp.gmail.com",
+        smtp_port=int(os.getenv("SMTP_PORT") or "587"),
         lookahead_days=int(os.getenv("LOOKAHEAD_DAYS", "14")),
         timezone=os.getenv("TIMEZONE", "Australia/Sydney"),
         dry_run=env_bool("DRY_RUN", False),

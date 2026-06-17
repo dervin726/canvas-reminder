@@ -6,7 +6,7 @@ import sys
 
 from .canvas_client import CanvasClient
 from .config import load_settings
-from .emailer import send_outlook_email
+from .emailer import send_smtp_email
 from .reminder import build_email, collect_unfinished_assignments, should_send_for_schedule
 
 
@@ -49,13 +49,15 @@ def run(*, ignore_schedule: bool = False) -> int:
         print("DRY_RUN=true, email was not sent.")
         return 0
 
-    send_outlook_email(
-        sender=settings.outlook_email,
-        password=settings.outlook_password,
+    send_smtp_email(
+        sender=settings.smtp_email,
+        password=settings.smtp_password,
         recipient=settings.recipient_email,
         subject=subject,
         text_body=text_body,
         html_body=html_body,
+        smtp_host=settings.smtp_host,
+        smtp_port=settings.smtp_port,
     )
     print(f"Email sent to {settings.recipient_email}.")
     return 0
