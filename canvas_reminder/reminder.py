@@ -181,4 +181,4 @@ def should_send_for_schedule(now: datetime, timezone_name: str, *, force_run: bo
     if force_run:
         return True
     local_now = now.astimezone(ZoneInfo(timezone_name))
-    return local_now.weekday() == 6 and local_now.hour == 18
+    return local_now.weekday() == 6 and 18 <= local_now.hour <= 20

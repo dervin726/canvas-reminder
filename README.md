@@ -35,8 +35,8 @@ python -m canvas_reminder run
 - `LOOKAHEAD_DAYS`: defaults to `14`
 - `TIMEZONE`: defaults to `Australia/Sydney`
 - `DRY_RUN`: defaults to `false`
-- `FORCE_RUN`: set to `true` to bypass the Sunday 18:00 schedule guard in GitHub Actions
+- `FORCE_RUN`: set to `true` to bypass the Sunday 18:00-20:59 schedule guard in GitHub Actions
 
 ## GitHub Actions
 
-Add the required variables as GitHub repository secrets, then use the `Weekly Canvas Reminder` workflow. It runs on both UTC 07:00 and 08:00 every Sunday; the script checks `Australia/Sydney` locally so daylight saving time is handled correctly.
+Add the required variables as GitHub repository secrets, then use the `Weekly Canvas Reminder` workflow. It runs on both UTC 07:00 and 08:00 every Sunday; the script accepts Sunday 18:00-20:59 in `Australia/Sydney` so daylight saving time and delayed scheduled runs are handled more reliably.

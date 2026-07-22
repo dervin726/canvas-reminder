@@ -120,13 +120,19 @@ def test_build_email_lists_assignments():
     assert "<table" in html
 
 
-def test_should_send_for_schedule_accepts_sunday_18_sydney():
+def test_should_send_for_schedule_accepts_sunday_evening_sydney():
     now = datetime(2026, 6, 14, 8, tzinfo=ZoneInfo("UTC"))
 
     assert should_send_for_schedule(now, "Australia/Sydney") is True
 
 
+def test_should_send_for_schedule_accepts_delayed_sunday_evening_sydney():
+    now = datetime(2026, 6, 14, 10, tzinfo=ZoneInfo("UTC"))
+
+    assert should_send_for_schedule(now, "Australia/Sydney") is True
+
+
 def test_should_send_for_schedule_rejects_other_hours():
-    now = datetime(2026, 6, 14, 7, tzinfo=ZoneInfo("UTC"))
+    now = datetime(2026, 6, 14, 11, tzinfo=ZoneInfo("UTC"))
 
     assert should_send_for_schedule(now, "Australia/Sydney") is False
