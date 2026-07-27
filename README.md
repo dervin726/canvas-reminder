@@ -39,4 +39,4 @@ python -m canvas_reminder run
 
 ## GitHub Actions
 
-Add the required variables as GitHub repository secrets, then use the `Weekly Canvas Reminder` workflow. It runs on both UTC 07:00 and 08:00 every Sunday; the script accepts Sunday 18:00-20:59 in `Australia/Sydney` so daylight saving time and delayed scheduled runs are handled more reliably.
+Add the required variables as GitHub repository secrets, then use the `Weekly Canvas Reminder` workflow. It runs at UTC 08:00 every Sunday; the script accepts Sunday 18:00-20:59 in `Australia/Sydney`, which covers both standard time and daylight saving time while avoiding duplicate emails.
